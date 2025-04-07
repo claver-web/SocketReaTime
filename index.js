@@ -11,6 +11,9 @@ app.use(bodyParser.json());
 
 const server = http.createServer(app);
 
+app.get('/', (req, res) => {
+    res.json({success: "Working"});
+});
 
 const io = new Server(server, {
     cors: {
