@@ -1,46 +1,30 @@
-import http from 'http';
 import express from 'express';
-import { Server } from 'socket.io';
+import http from 'http';
+import { WebSocketServer } from 'ws'
 import cors from 'cors';
-
-import bodyParser from 'body-parser';
 
 const app = express();
 app.use(cors());
-app.use(bodyParser.json());
-
 const server = http.createServer(app);
+const wss = new WebSocketServer({ server });
 
-app.get('/', (req, res) => {
-    res.json({success: "Working"});
-});
+app.use(express.static('public'));
 
-const io = new Server(server, {
-    cors: {
-        origin: '*',
-        methods: ['GET', 'POST']
-    }
+wss.on('connection', (ws) => {
+  console.log("Client is Connected!!");
+
+  ws.on('message', (message) => {
+    wss.clients.forEach(client => {
+      if (client !== ws && client.readyState === WebSocket.OPEN) {
+        client.send(message);
+      }
+    });
+  })
 })
 
-io.on('connection', (socket) => {
-    console.log(`Client connected: ${socket.id}`);
-
-    socket.on('message', (data) => {
-        console.log(`Message from ${socket.id}:`, data);
-
-        io.emit('message', {
-            id: socket.id,
-            text: data,
-            timeStamp: Date.now()
-        })
-    })
-
-    socket.on("disconnect", () => {
-        console.log(`Client disconnected: ${socket.id}`);
-    })
+wss.on('close', () => {
+  console.log("Client is closed!!!");
+  
 })
 
-const PORT = 3000;
-server.listen(PORT, () => {
-  console.log(`Socket.IO server running at http://localhost:${PORT}`);
-});
+server.listen(3000, () => console.log('Server running on http://localhost:3000'));
