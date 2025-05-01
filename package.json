@@ -1,11 +1,10 @@
 {
-  "name": "Web Socket",
+  "name": "WebRTC Server",
   "version": "1.0.0",
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "dev": "nodemon index.js",
-    "socketIO": "nodemon socketIO.js"
+    "dev": "node index.js"
   },
   "keywords": [],
   "author": "",
@@ -15,9 +14,6 @@
     "body-parser": "^2.2.0",
     "cors": "^2.8.5",
     "express": "^5.1.0",
-    "pg": "^8.14.1",
-    "sequelize": "^6.37.7",
-    "socket.io": "^4.8.1",
     "ws": "^8.18.1"
   },
   "devDependencies": {
